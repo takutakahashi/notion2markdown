@@ -3,6 +3,7 @@ package notion2markdown
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"strings"
 
 	"github.com/jomei/notionapi"
@@ -141,7 +142,21 @@ func QuoteToMarkdown(code notionapi.Quote) string {
 func ImageToMarkdown(image notionapi.Image) string {
 	var markdown string
 	if image.File != nil && image.File.URL != "" {
-		markdown = fmt.Sprintf("![Untitled](%s)", image.File.URL)
+		u, err := url.Parse(image.File.URL)
+		if err != nil {
+			return ""
+		}
+		parts := strings.Split(u.Path, "/")
+		fileName := parts[len(parts)-1]
+		fileID := parts[len(parts)-2]
+		parts = strings.SplitN(fileName, ".", 2)
+		ext := ""
+		if len(parts) == 2 {
+			fileName = parts[0]
+			ext = "." + parts[1]
+		}
+		file := fmt.Sprintf("%s-%s%s", fileName, fileID, ext)
+		markdown = fmt.Sprintf("![Untitled](%s)", file)
 	}
 	return markdown
 }
