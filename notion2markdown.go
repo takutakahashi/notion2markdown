@@ -110,7 +110,7 @@ func Heading3ToMarkdown(heading3 notionapi.Heading) string {
 
 func ParagraphToMarkdown(paragraph notionapi.Paragraph) string {
 	markdown := RichTextsToMarkdown(paragraph.RichText)
-	markdown = markdown + "\n"
+	markdown = markdown + "  \n"
 	return markdown
 }
 
